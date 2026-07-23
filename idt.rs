@@ -9,10 +9,12 @@ use crate::patch_screen;
 use crate::keyboard;
 use crate::hex_converter;
 use crate::shutdown;
+use crate::keyboard::current_position;
+use crate::keyboard::current_line;
 
 pub static mut current_timer: usize = 0;
 pub static mut help_cmd: usize = 0;
-pub static mut current_update: usize = 0;
+pub static mut current_color: usize = 0 as usize;
 
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
@@ -118,7 +120,7 @@ pub extern "C" fn interrupt_is_ready() {
 
     unsafe {
 
-        print_screen::print_screen(GLOBALS.GLOBAL_FB_PTR, GLOBALS.GLOBAL_STRIDE, 0, 95, 0x00FF00, "[+] Interrupts is ready.");
+        print_screen::print_screen(GLOBALS.GLOBAL_FB_PTR, GLOBALS.GLOBAL_STRIDE, 0, 95, 0xFFFFFF, "[+] Interrupts is ready.");
         apic_read::apic_write(apic_read::REG_EOI as usize, 0 as usize);
     	
     }
@@ -156,8 +158,8 @@ pub extern "C" fn heat_reader() {
         let mut buf = [0u8; 20];
         let real_temp = unsafe { u32_converter::ConvertStr(temp.into(), &mut buf) };
 
-        print_screen::print_screen(GLOBALS.GLOBAL_FB_PTR, GLOBALS.GLOBAL_STRIDE, 1855, 0, 0x00FF00, "CPU Temp:");
-        print_screen::print_screen(GLOBALS.GLOBAL_FB_PTR, GLOBALS.GLOBAL_STRIDE, 1905, 0, 0x00FF00, real_temp);
+        print_screen::print_screen(GLOBALS.GLOBAL_FB_PTR, GLOBALS.GLOBAL_STRIDE, 1855, 0, 0xFFFFFF, "CPU Temp:");
+        print_screen::print_screen(GLOBALS.GLOBAL_FB_PTR, GLOBALS.GLOBAL_STRIDE, 1905, 0, 0xFFFFFF, real_temp);
         
         if current_timer >= 2 {
         	patch_screen::patch_screen(GLOBALS.GLOBAL_FB_PTR, GLOBALS.GLOBAL_STRIDE, 1855, 0, 0x000000, 67);
@@ -167,6 +169,39 @@ pub extern "C" fn heat_reader() {
         asm!("sti");
 
         apic_read::apic_write(apic_read::REG_EOI as usize, 0 as usize);
+    }
+	
+}
+
+#[no_mangle]
+pub extern "C" fn color_change() {
+
+    unsafe { 
+
+        asm!("cli"); 
+
+        if current_color >= 2 {
+
+            clear_screen::clear_screen(GLOBALS.GLOBAL_FB_PTR, GLOBALS.GLOBAL_WITH, GLOBALS.GLOBAL_HEIGHT, 0x000080);
+            help_cmd = 0;
+            current_position = 30;
+            current_line = 0;
+            current_color = 0;
+    	
+        }
+
+        else {
+
+            clear_screen::clear_screen(GLOBALS.GLOBAL_FB_PTR, GLOBALS.GLOBAL_WITH, GLOBALS.GLOBAL_HEIGHT, 0x000000);
+            help_cmd = 0;
+            current_position = 30;
+            current_line = 0;
+    	
+        }
+    
+        current_color += 1;
+        asm!("sti");
+
     }
 	
 }
@@ -197,7 +232,7 @@ pub extern "C" fn help_interrupt() {
         	help_cmd = 0;
         }
 
-        print_screen::print_screen(GLOBALS.GLOBAL_FB_PTR, GLOBALS.GLOBAL_STRIDE, 0, help_cmd, 0x00FF00, "[+] int 36: Show value of ECX register. int 37: Shutdown System.");
+        print_screen::print_screen(GLOBALS.GLOBAL_FB_PTR, GLOBALS.GLOBAL_STRIDE, 0, help_cmd, 0xFFFFFF, "[+] int 36: Show value of ECX register. int 37: Shutdown System. int 38: For clearing screen and terminal color.");
         //help_cmd += 40;
     	
     }
@@ -211,14 +246,6 @@ pub extern "C" fn register_value_read(stack_pointer: *mut u64) {
 
     unsafe {
 
-        current_update += 1;
-
-        if current_update >= 2 {
-        	patch_screen::patch_screen(GLOBALS.GLOBAL_FB_PTR, GLOBALS.GLOBAL_STRIDE, 1765, 20, 0x000000, 118);
-        	current_update = 0;
-        	return;
-        }
-
         let register_rcx = *stack_pointer.add(7);
         let register_ecx = register_rcx as u32;
 
@@ -226,8 +253,8 @@ pub extern "C" fn register_value_read(stack_pointer: *mut u64) {
         hex_converter::hex_converter(register_ecx as u64, &mut buf);
 
         let hex_string: &str = core::str::from_utf8_unchecked(&buf);
-        print_screen::print_screen(GLOBALS.GLOBAL_FB_PTR, GLOBALS.GLOBAL_STRIDE, 1765, 20, 0x00FF00, "ECX -");
-        print_screen::print_screen(GLOBALS.GLOBAL_FB_PTR, GLOBALS.GLOBAL_STRIDE, 1800, 20, 0x00FF00, hex_string);
+        print_screen::print_screen(GLOBALS.GLOBAL_FB_PTR, GLOBALS.GLOBAL_STRIDE, 0, help_cmd, 0xFFFFFF, "ECX -");
+        print_screen::print_screen(GLOBALS.GLOBAL_FB_PTR, GLOBALS.GLOBAL_STRIDE, 50, help_cmd, 0xFFFFFF, hex_string);
 
     }
 	
@@ -325,6 +352,23 @@ pub extern "C" fn interrupt_shutdown() {
         naked_asm!(
         	push_all_registers!(),
         	"call shutdown_driver",
+        	pop_all_registers!(),
+        	"iretq"
+        );
+    	
+    }
+	
+}
+
+#[unsafe(naked)]
+
+pub extern "C" fn interrupt_color_change() {
+
+    unsafe {
+
+        naked_asm!(
+        	push_all_registers!(),
+        	"call color_change",
         	pop_all_registers!(),
         	"iretq"
         );
