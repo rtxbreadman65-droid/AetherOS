@@ -23,6 +23,7 @@ mod patch_screen;
 mod keyboard;
 mod ioapic;
 mod hex_converter;
+mod skull;
 
 static mut help_cmd: usize = 0 as usize;
 pub static TEMPOLINE_CODE: &[u8] = include_bytes!("tempoline_code.bin");
@@ -167,6 +168,7 @@ pub extern "C" fn kernel_main(fb_ptr: *mut u32, screen_with: usize, screen_heigh
     idt::set_idt_gate(36, idt::interrupt_registers_read as u64);
     idt::set_idt_gate(37, idt::interrupt_shutdown as u64);
     idt::set_idt_gate(38, idt::interrupt_color_change as u64);
+    idt::set_idt_gate(39, idt::interrupt_skull_logo as u64);
     idt::idt_load();
 
     unsafe {

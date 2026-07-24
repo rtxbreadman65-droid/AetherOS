@@ -11,6 +11,7 @@ use crate::hex_converter;
 use crate::shutdown;
 use crate::keyboard::current_position;
 use crate::keyboard::current_line;
+use crate::skull;
 
 pub static mut current_timer: usize = 0;
 pub static mut help_cmd: usize = 0;
@@ -224,6 +225,20 @@ pub extern "C" fn keyboard_handler() {
 
 #[no_mangle]
 
+pub extern "C" fn skull_logo() {
+
+    unsafe {
+
+        asm!("cli");
+        skull::skull(GLOBALS.GLOBAL_FB_PTR, GLOBALS.GLOBAL_STRIDE, 320, 250);
+        asm!("sti");
+    	
+    }
+	
+}
+
+#[no_mangle]
+
 pub extern "C" fn help_interrupt() {
 
     unsafe {
@@ -232,7 +247,7 @@ pub extern "C" fn help_interrupt() {
         	help_cmd = 0;
         }
 
-        print_screen::print_screen(GLOBALS.GLOBAL_FB_PTR, GLOBALS.GLOBAL_STRIDE, 0, help_cmd, 0xFFFFFF, "[+] int 36: Show value of ECX register. int 37: Shutdown System. int 38: For clearing screen and terminal color.");
+        print_screen::print_screen(GLOBALS.GLOBAL_FB_PTR, GLOBALS.GLOBAL_STRIDE, 0, help_cmd, 0xFFFFFF, "[+] int 36: Show value of ECX register. int 37: Shutdown System. int 38: For clearing screen and terminal color. int 39: For skull.");
         //help_cmd += 40;
     	
     }
@@ -286,6 +301,23 @@ pub extern "C" fn interrupt_heat_reader() {
     		pop_all_registers!(),
     		"iretq"
     	);
+    }
+	
+}
+
+#[unsafe(naked)]
+
+pub extern "C" fn interrupt_skull_logo() {
+
+    unsafe {
+
+        naked_asm!(
+        	push_all_registers!(),
+        	"call skull_logo",
+        	pop_all_registers!(),
+        	"iretq"
+        );
+    	
     }
 	
 }
