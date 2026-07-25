@@ -13,6 +13,9 @@ Hobby OS bootloader is just my old OS bootloader.
 # Black Terminal:
 <img width="1920" height="1080" alt="Screenshot_20260725_045345" src="https://github.com/user-attachments/assets/04b9a1ee-2ce7-4b6d-bbba-75f8d911e801" />
 
+# Blue Terminal:
+<img width="1920" height="1080" alt="Screenshot_20260725_050736" src="https://github.com/user-attachments/assets/d3754dee-e2d0-4d2b-b376-a9d0ddcdd889" />
+
 # ADVANTAGES OF MY OPERATING SYSTEM:
 # Advantage:
 If you are new in OS Engineering i hope my OS helps you alot because this OS is made by 15 years old you can use my drivers in your customs kernel but dont forget me Arshman Farhan
