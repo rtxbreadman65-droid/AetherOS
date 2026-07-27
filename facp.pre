@@ -1,0 +1,21 @@
+Usage: acpidump [options]
+Options:
+  -b                  Dump tables to binary files
+  -h -?               This help message
+  -o <File>           Redirect output to file
+  -r <Address>        Dump tables from specified RSDP
+  -s                  Print table summaries only
+  -v                  Display version information
+  -vd                 Display build date and time
+  -z                  Verbose mode
+
+Table Options:
+  -a <Address>        Get table via a physical address
+  -c <on|off>         Turning on/off customized table dumping
+  -f <BinaryFile>     Get table via a binary file
+  -n <Signature>      Get table via a name/signature
+  -x                  Use RSDT instead of XSDT
+
+Invocation without parameters dumps all available tables
+Multiple mixed instances of -a, -f, and -n are supported
+
