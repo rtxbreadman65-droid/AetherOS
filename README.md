@@ -20,7 +20,9 @@ This is my operating system boot sequences.
 I made this Operating system all by myself no external crate etc. This is my 2 months project I am still working on my operating system solo.
 I made this operating system with zero abstraction. I am only 15 years old. if you are new in OS Engineering I hope my OS helps you understanding 
 basics of OS Engineering. My operating system only runs on intel. you can customize my kernel to run on your PC. This operating system runs perfectly 
-on mine. My operating system only runs in uefi systems. To run my operating system please use my bootloader only which is in src folder, and my compilations command. If you need any help here is my instagram id: sys.arshman.
+on mine. My operating system only runs in uefi systems. To run my operating system please use my bootloader only which is in src folder, and my compilations command.
+My future plan is to make this OS multiprocessor, And I an currently working on it.
+If you need any help here is my instagram id: sys.arshman.
 
 # COMPILATION COMMAND:
 
