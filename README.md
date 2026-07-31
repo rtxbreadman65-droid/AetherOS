@@ -22,7 +22,7 @@ I made this operating system with zero abstraction. I am only 15 years old. if y
 basics of OS Engineering. My operating system only runs on intel. you can customize my kernel to run on your PC. This operating system runs perfectly 
 on mine. My operating system only runs in uefi systems. To run my operating system please use my bootloader only which is in src folder, and my compilations command.
 My future plan is to make this OS multiprocessor, And I an currently working on it.
-If you need any help here is my instagram id: sys.arshman.
+If you need any help here is my instagram id: larp.larp.larp.arch.
 
 # COMPILATION COMMAND:
 
