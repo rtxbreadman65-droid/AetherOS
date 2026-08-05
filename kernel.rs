@@ -30,6 +30,8 @@ mod help_interrupt_wrapper;
 mod interrupt_shutdown_wrapper;
 mod interrupt_register_read_wrapper;
 mod skull_logo_wrapper;
+mod invalid_op_code_handler;
+mod debugger;
 
 pub static TEMPOLINE_CODE: &[u8] = include_bytes!("tempoline_code.bin");
 
@@ -87,6 +89,8 @@ pub extern "C" fn kernel_main(fb_ptr: *mut u32, screen_with: usize, screen_heigh
     gdt::load_gdt();
     print_screen::print_screen(fb_ptr, stride, 0, 60, global_color, "[+] GDT settings done.");
     print_screen::print_screen(fb_ptr, stride, 0, 77, global_color, "[+] Setting up IDT entries.");
+    idt::set_idt_gate(3, debugger::debugger_handler as *const () as u64);
+    idt::set_idt_gate(6, invalid_op_code_handler::invalid_opcode_handler_wrapper as *const () as u64);
     idt::set_idt_gate(32, interrupt_is_ready::call_interrupt as *const () as u64);
     idt::set_idt_gate(33, heat_reader_wrapper::interrupt_heat_reader as *const () as u64);
     idt::set_idt_gate(34, keyboard_handler_wrapper::interrupt_keyboard_handler as *const () as u64);
@@ -113,11 +117,12 @@ pub extern "C" fn kernel_main(fb_ptr: *mut u32, screen_with: usize, screen_heigh
     clear_screen::clear_screen(fb_ptr, screen_with, screen_height, 0x000000);
 
     print_screen::print_screen(fb_ptr, stride, 0, 0, global_color, "ROOT#");
-
+    
     apic_read::init_apic();
     apic_read::set_timer(100000, 33);
     
 
+    //unsafe { asm!("int 3"); }
     loop {
         unsafe {
         	asm!("hlt");

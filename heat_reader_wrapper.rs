@@ -24,11 +24,11 @@ pub extern "C" fn heat_reader() {
         let mut buf = [0u8; 20];
         let real_temp = u32_converter::convert_str(temp.into(), &mut buf);
 
-        print_screen::print_screen(GLOBALS.global_fb_ptr, GLOBALS.global_stride, 1855, 0, 0xFFFFFF, "CPU Temp:");
-        print_screen::print_screen(GLOBALS.global_fb_ptr, GLOBALS.global_stride, 1905, 0, 0xFFFFFF, real_temp);
+        print_screen::print_screen(GLOBALS.global_fb_ptr, GLOBALS.global_stride, (GLOBALS.global_height - 150) as usize, 0, 0xFFFFFF, "CPU Temp:");
+        print_screen::print_screen(GLOBALS.global_fb_ptr, GLOBALS.global_stride, (GLOBALS.global_height - 50) as usize, 0, 0xFFFFFF, real_temp);
         
         if CURRENT_TIMER >= 2 {
-                patch_screen::patch_screen(GLOBALS.global_fb_ptr, GLOBALS.global_stride, 1855, 0, 0x000000, 67);
+                patch_screen::patch_screen(GLOBALS.global_fb_ptr, GLOBALS.global_stride, (GLOBALS.global_height - 150) as usize, 0, 0x000000, 130);
                 CURRENT_TIMER = 0;
         }
         
