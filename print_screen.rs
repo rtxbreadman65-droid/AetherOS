@@ -22,7 +22,7 @@ pub fn print_screen(fb: *mut u32, stride: usize, screen_with_x: usize, screen_he
                     }
             	}
             }
-            starting_position += 5;
+            starting_position += 10;
 	    }
     }
 }
