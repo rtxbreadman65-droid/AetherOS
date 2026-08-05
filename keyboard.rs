@@ -7,7 +7,7 @@ use crate::idt::HELP_CMD;
 use crate::patch_screen;
 use core::arch::asm;
 
-pub static mut CURRENT_POSITION: usize = 30;
+pub static mut CURRENT_POSITION: usize = 50;
 pub static mut CURRENT_LINE: usize = 0;
 
 //#[link_section = ".text"]
@@ -93,17 +93,17 @@ pub extern "C" fn keyboard_read() {
                 }             
 
                 print_screen::print_screen(GLOBALS.global_fb_ptr, GLOBALS.global_stride, 0, CURRENT_LINE, 0xFFFFFF, "ROOT#");
-            	CURRENT_POSITION = 30;
+            	CURRENT_POSITION = 50;
             	return
             }
 
             if scancode == 0x0E {
 
                 if CURRENT_POSITION > GLOBALS.global_stride || CURRENT_POSITION > GLOBALS.global_with || CURRENT_POSITION > GLOBALS.global_height {
-                    CURRENT_POSITION = 30;
+                    CURRENT_POSITION = 50;
                 };
 
-                if CURRENT_POSITION >= 30 {
+                if CURRENT_POSITION >= 50 {
                 
             	CURRENT_POSITION -= 15;
             	patch_screen::patch_screen(GLOBALS.global_fb_ptr, GLOBALS.global_stride, CURRENT_POSITION, CURRENT_LINE, 0x000000, 8);
@@ -146,7 +146,7 @@ pub extern "C" fn keyboard_read() {
                 asm!("out 0x80, al");
 
                 if CURRENT_POSITION > GLOBALS.global_stride || CURRENT_POSITION > GLOBALS.global_with || CURRENT_POSITION > GLOBALS.global_height {
-                	CURRENT_POSITION = 30;
+                	CURRENT_POSITION = 50;
                 }
 
                 print_screen::print_screen(GLOBALS.global_fb_ptr, GLOBALS.global_stride, CURRENT_POSITION, CURRENT_LINE, 0xFFFFFF, ch_str);
@@ -155,7 +155,7 @@ pub extern "C" fn keyboard_read() {
                 let stride = GLOBALS.global_stride - 8;
 
                 if CURRENT_POSITION >= stride {
-                	CURRENT_POSITION = 30;
+                	CURRENT_POSITION = 50;
                 }
                 
                 return

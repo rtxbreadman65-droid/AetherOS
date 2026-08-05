@@ -19,7 +19,7 @@ pub extern "C" fn color_change() {
 
             clear_screen::clear_screen(GLOBALS.global_fb_ptr, GLOBALS.global_with, GLOBALS.global_height, 0x000080);
             HELP_CMD = 0;
-            CURRENT_POSITION = 30;
+            CURRENT_POSITION = 50;
             CURRENT_LINE = 0;
             CURRENT_COLOR = 0;
     
@@ -29,7 +29,7 @@ pub extern "C" fn color_change() {
 
             clear_screen::clear_screen(GLOBALS.global_fb_ptr, GLOBALS.global_with, GLOBALS.global_height, 0x000000);
             HELP_CMD = 0;
-            CURRENT_POSITION = 30;
+            CURRENT_POSITION = 50;
             CURRENT_LINE = 0;
     
         }
