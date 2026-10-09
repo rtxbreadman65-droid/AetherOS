@@ -81,4 +81,4 @@ cargo build --target x86_64-unknown-uefi
 
 # 3. Create ESP structure
 mkdir -p esp/EFI/BOOT
-cp target/x86_64-unknown-uefi/debug/NetworkingOS.efi esp/EFI/BOOT/BOOTX64.EFI
+cp target/x86_64-unknown-uefi/debug/AetherOS.efi esp/EFI/BOOT/BOOTX64.EFI
