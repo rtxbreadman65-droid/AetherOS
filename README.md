@@ -2,7 +2,7 @@
 
 **A pure Rust, from-scratch bare-metal operating system kernel for x86_64 (UEFI)**
 
-Built completely from scratch with **zero external crates**.  
+Kernel built completely from scratch with **zero external crates**.  
 Made by a 15-year-old developer learning low-level systems programming.
 
 ---
